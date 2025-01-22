@@ -15,11 +15,14 @@ def emotion_detector(text_to_analyze):
     emotions = predictions[0].get("emotion", {})
 
     # Extract the required emotions from the API response
-    relevant_emotions = {emotion: emotions.get(emotion) for emotion in["anger", "disgust", "fear", "joy", "sadness"]}
+    # If the response status code is 200
+    if response.status_code == 200:
+        relevant_emotions = {emotion: emotions.get(emotion) for emotion in["anger", "disgust", "fear", "joy", "sadness"]}
+    if response.status_code == 400:
+        return {emotion: None for emotion in ["anger", "disgust", "fear", "joy", "sadness", "dominant_emotion"]}
     
-    # Find the dominant emotion
+    #extract dominant_emotions
     dominant_emotion = max(relevant_emotions, key=relevant_emotions.get)
-
     # Add the dominant emotion to the result
     relevant_emotions["dominant_emotion"] = dominant_emotion
 
